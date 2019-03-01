@@ -1,23 +1,23 @@
-# Reducto [![Build Status](https://travis-ci.org/zefirka/reducto.svg?branch=master)](https://travis-ci.org/zefirka/reducto)
+# Reduxto [![Build Status](https://travis-ci.org/zefirka/reduxto.svg?branch=master)](https://travis-ci.org/zefirka/reduxto)
 
 
 <img src="./static/reducto.gif" align="right" width="180"/>
 
-Reducto is small and simple reducer creator for redux. If you're tired to write same code for every reducer, describe actions, constants, action-handlers then you may find reducto useful. It's totally hackable and extensible, so if your approach to action naming, data types and structures in store, namespacing your actions is different then reducto provides by standard, you can configure reducto for yourself very easy. 
+reduxto is small and simple reducer creator for redux. If you're tired to write same code for every reducer, describe actions, constants, action-handlers then you may find reduxto useful. It's totally hackable and extensible, so if your approach to action naming, data types and structures in store, namespacing your actions is different then reduxto provides by standard, you can configure reduxto for yourself very easy. 
 
 ## Usage and ratio
 [Look for examples, methods, configuring and extending in docs](#documentation)
 
-Simplify your reducers creation with reducto, use it and get ready reducer and actions. No constants, no manual action creation, no copy-paste logic in reducers.
+Simplify your reducers creation with reduxto, use it and get ready reducer and actions. No constants, no manual action creation, no copy-paste logic in reducers.
 
 ```js 
 // store/boxes.js
-export {actions, reducer} = reducto('boxes', {;
+export {actions, reducer} = reduxto('boxes', {;
     0: {name: 'Default Box'}
 });
 
 // store/items.js
-export {actions, reducer} = reducto('items', {});
+export {actions, reducer} = reduxto('items', {});
 
 // store/reducer.js
 import {reducer as boxes} from './boxes';
@@ -29,7 +29,7 @@ export default combineReducers({
 });
 ```
 
-Reductor will return object `{actions, reducer}`, where will be namespaced actions `get`, `getById`, `set`, `put`, `update`, `remove`, prefixed with reducer namespace, and ready action handlers for all non-get methods in reducer.
+reduxtor will return object `{actions, reducer}`, where will be namespaced actions `get`, `getById`, `set`, `put`, `update`, `remove`, prefixed with reducer namespace, and ready action handlers for all non-get methods in reducer.
 
 ## Use it in sagas or in thunk
 ```js
@@ -85,7 +85,7 @@ Mostly it's visible in projects with specified apis (JSONAPI, strict REST with r
 
 In this case appears a neccessary for a lot of similiar actions over store. It's mostly about CRUD operations.
 
-So we've decided that we can optimize reducer creation with reducto.  
+So we've decided that we can optimize reducer creation with reduxto.  
 
 
 ## Documentation
@@ -93,7 +93,7 @@ So we've decided that we can optimize reducer creation with reducto.
 
 ### Reducer methods
 
-By standard Reducto is made for work with flat objects in store, with ID as key property (normalized JSON API data) for example:
+By standard reduxto is made for work with flat objects in store, with ID as key property (normalized JSON API data) for example:
 
 ```
 {
@@ -113,7 +113,7 @@ By standard Reducto is made for work with flat objects in store, with ID as key 
 }
 ```
 
-This sttructure will be ok. And reducto will provide actions:
+This sttructure will be ok. And reduxto will provide actions:
 
 #### Actions
 
@@ -129,7 +129,7 @@ Actions with handlers:
 
 ```js
 const defaultState = {}
-const {actions, reducer} = reducto('boxes', defaultState)
+const {actions, reducer} = reduxto('boxes', defaultState)
 
 actions.get() // {type: 'boxes/getBoxes'}
 actions.getById(12) // {type: 'boxes/getBoxesById', payload: 12}
