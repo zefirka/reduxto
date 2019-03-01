@@ -19,9 +19,10 @@ const DEFAULT_CONFIG = {
             const type = `${namespace}/${actionName}${capitalize(namespace)}`
 
             function actionCreator(...args) {
+                const actionExtend = args ? payloadCreator(...args) : {}
                 return {
                     type,
-                    ...payloadCreator(...args)
+                    ...actionExtend,
                 }
             }
 

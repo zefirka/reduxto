@@ -8,7 +8,39 @@ describe('reduxto', () => {
     })
     
     describe('actions', () => {
-        
+        test('actions should be correct', () => {
+            expect(actions.set.toString()).toBe('test/setTest')
+            expect(actions.get.toString()).toBe('test/getTest')
+            expect(actions.getById.toString()).toBe('test/getByIdTest')
+            expect(actions.put.toString()).toBe('test/putTest')
+            expect(actions.update.toString()).toBe('test/updateTest')
+            expect(actions.remove.toString()).toBe('test/removeTest')
+        })
+
+        test('should be correct action value', () => {
+            expect(actions.set('data')).toEqual({
+                type: 'test/setTest',
+                payload: 'data',
+            })
+            expect(actions.get()).toEqual({
+                type: 'test/getTest',
+            })
+            expect(actions.getById()).toEqual({
+                type: 'test/getByIdTest',
+            })
+            expect(actions.put('data')).toEqual({
+                type: 'test/putTest',
+                payload: 'data',
+            })
+            expect(actions.update('data')).toEqual({
+                type: 'test/updateTest',
+                payload: 'data',
+            })
+            expect(actions.remove('data')).toEqual({
+                type: 'test/removeTest',
+                payload: 'data',
+            })
+        })
     })
 
     describe('action handlers', () => {
