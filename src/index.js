@@ -1,5 +1,4 @@
-const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1)
-const unaryId = (payload) => ({payload})
+import {capitalize, put, copy, unaryId} from './utils'
 
 const DEFAULT_CONFIG = {
     strictInvariant: true,
@@ -7,10 +6,10 @@ const DEFAULT_CONFIG = {
         'get': null,
         'getById': null,
         'set': (_, {payload}) => payload,
-        'put': (state, {payload}) => ({...state, ...payload}),
-        'update': (state, {payload: {id, value}}) => ({...state, [id]: value}),
+        'put': put,
+        'update': (state, {payload: {id, value}}) => ({...copy(state), [id]: value}),
         'remove': (state, {payload}) => {
-            const s = {...state}
+            const s = copy(state)
             delete s[payload]
             return s
         },
@@ -56,8 +55,6 @@ const DEFAULT_CONFIG = {
     }
 }
 
-const config = DEFAULT_CONFIG
-
 function reduxto(namespace, defaultState, handlers = {}) {
     const createAction = reduxto.__config.actionCreator(namespace)
 
@@ -84,7 +81,7 @@ function reduxto(namespace, defaultState, handlers = {}) {
     }
 }
 
-reduxto.__config = config;
+reduxto.__config = DEFAULT_CONFIG;
 
 reduxto.configure = (cfg) => {
     const newActions =  {

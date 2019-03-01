@@ -38,14 +38,98 @@
     return target;
   }
 
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+  }
+
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
+  function _iterableToArrayLimit(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance");
+  }
+
   var capitalize = function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
-
   var unaryId = function unaryId(payload) {
     return {
       payload: payload
     };
+  };
+  var copy = function copy(state) {
+    var s = {};
+
+    var _arr = Object.entries(state);
+
+    for (var _i = 0; _i < _arr.length; _i++) {
+      var _arr$_i = _slicedToArray(_arr[_i], 2),
+          id = _arr$_i[0],
+          value = _arr$_i[1];
+
+      s[id] = _objectSpread({}, value);
+    }
+
+    return s;
+  };
+  var put = function put(state, _ref) {
+    var payload = _ref.payload;
+    var s = {};
+
+    var _arr2 = Object.entries(state);
+
+    for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
+      var _arr2$_i = _slicedToArray(_arr2[_i2], 2),
+          id = _arr2$_i[0],
+          value = _arr2$_i[1];
+
+      if (payload[id]) {
+        s[id] = _objectSpread({}, value, payload[id]);
+      } else {
+        s[id] = _objectSpread({}, value);
+      }
+    }
+
+    var _arr3 = Object.entries(payload);
+
+    for (var _i3 = 0; _i3 < _arr3.length; _i3++) {
+      var _arr3$_i = _slicedToArray(_arr3[_i3], 2),
+          id = _arr3$_i[0],
+          value = _arr3$_i[1];
+
+      if (!s[id]) {
+        s[id] = value;
+      }
+    }
+
+    return s;
   };
 
   var DEFAULT_CONFIG = {
@@ -57,21 +141,16 @@
         var payload = _ref.payload;
         return payload;
       },
-      'put': function put(state, _ref2) {
-        var payload = _ref2.payload;
-        return _objectSpread({}, state, payload);
+      'put': put,
+      'update': function update(state, _ref2) {
+        var _ref2$payload = _ref2.payload,
+            id = _ref2$payload.id,
+            value = _ref2$payload.value;
+        return _objectSpread({}, copy(state), _defineProperty({}, id, value));
       },
-      'update': function update(state, _ref3) {
-        var _ref3$payload = _ref3.payload,
-            id = _ref3$payload.id,
-            value = _ref3$payload.value;
-        return _objectSpread({}, state, _defineProperty({}, id, value));
-      },
-      'remove': function remove(state, _ref4) {
-        var payload = _ref4.payload;
-
-        var s = _objectSpread({}, state);
-
+      'remove': function remove(state, _ref3) {
+        var payload = _ref3.payload;
+        var s = copy(state);
         delete s[payload];
         return s;
       }
@@ -122,7 +201,6 @@
       };
     }
   };
-  var config = DEFAULT_CONFIG;
 
   function reduxto(namespace, defaultState) {
     var _objectSpread4;
@@ -146,7 +224,7 @@
     };
   }
 
-  reduxto.__config = config;
+  reduxto.__config = DEFAULT_CONFIG;
 
   reduxto.configure = function (cfg) {
     var newActions = _objectSpread({}, reduxto.__config.actions, cfg.actions || {});
