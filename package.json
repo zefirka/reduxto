@@ -1,5 +1,5 @@
 {
-  "name": "reducto",
+  "name": "reductojs",
   "version": "0.0.1",
   "description": "Reducer creator",
   "main": "dist/reducto.js",
