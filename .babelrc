@@ -1,5 +1,15 @@
 {
-    "presets": [
-        ["@babel/env", {"modules": false}]
-    ]
+    "env": {
+        "prodution": {
+            "presets": [
+                ["@babel/env", {"modules": false}]
+            ]
+        },
+        "test": {
+            "presets": [
+                ["@babel/env", {"modules": "commonjs"}]
+            ]
+        }
+    }
+    
 }
