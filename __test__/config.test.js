@@ -1,7 +1,6 @@
-import reducto from '../index'
-import { exportSpecifier } from '@babel/types';
+import reduxto from '../index'
 
-describe('reducto config', () => {
+describe('reduxto config', () => {
 
     describe('with arrays', () => {
         const configActions = {
@@ -19,18 +18,18 @@ describe('reducto config', () => {
             remove: (state, {payload}) => state.filter(s => s.id !== payload),
         }
 
-        reducto.configure({
+        reduxto.configure({
             actions: configActions
         })
 
         test('should extend config', () => {
-            expect(reducto.__config.actions).toEqual({
-                ...reducto.configure.default.actions,
+            expect(reduxto.__config.actions).toEqual({
+                ...reduxto.configure.default.actions,
                 ...configActions,
             })
         })
 
-        const {reducer, actions} = reducto('test', [])
+        const {reducer, actions} = reduxto('test', [])
         let state = []
         const list = [{id: 1, value: 'a'}, {id: 2, value: 'b'}]
 

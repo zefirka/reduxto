@@ -5,9 +5,9 @@ export default [
   {
     input: 'index.js',
     output: {
-      file: 'dist/reducto.js',
+      file: 'dist/reduxto.js',
       format: 'umd',
-      name: 'reducto'
+      name: 'reduxto'
     },
     plugins: [
       babel({
@@ -18,9 +18,9 @@ export default [
   {
     input: 'index.js',
     output: {
-      file: 'dist/reducto.min.js',
+      file: 'dist/reduxto.min.js',
       format: 'umd',
-      name: 'reducto'
+      name: 'reduxto'
     },
     plugins: [
       uglify(),

@@ -49,7 +49,7 @@ const DEFAULT_CONFIG = {
             if (actions[type]) {
                 const newState = actions[type](state, action)
 
-                if (reducto.__config.strictInvariant) {
+                if (reduxto.__config.strictInvariant) {
                     return JSON.parse(JSON.stringify(newState))
                 }
 
@@ -61,16 +61,16 @@ const DEFAULT_CONFIG = {
 
 const config = DEFAULT_CONFIG
 
-function reducto(namespace, defaultState, handlers = {}) {
-    const reducerName = reducto.__config.reducerName(namespace)
-    const createAction = reducto.__config.actionCreator(namespace)
+function reduxto(namespace, defaultState, handlers = {}) {
+    const reducerName = reduxto.__config.reducerName(namespace)
+    const createAction = reduxto.__config.actionCreator(namespace)
 
-    const actions = Object.keys(reducto.__config.actions).reduce((acc, operation) => ({
+    const actions = Object.keys(reduxto.__config.actions).reduce((acc, operation) => ({
         ...acc,
         [operation]: createAction(operation + reducerName)
     }), {})
 
-    const defaultHandlers = reducto.__config.actions
+    const defaultHandlers = reduxto.__config.actions
 
     const actionHandlers = {
         [actions.set]: defaultHandlers.set,
@@ -80,7 +80,7 @@ function reducto(namespace, defaultState, handlers = {}) {
         ...handlers,
     }
 
-    const reducer = reducto.__config.reducerCreator(actionHandlers, defaultState)
+    const reducer = reduxto.__config.reducerCreator(actionHandlers, defaultState)
 
     return {
         reducer,
@@ -88,21 +88,21 @@ function reducto(namespace, defaultState, handlers = {}) {
     }
 }
 
-reducto.__config = config;
+reduxto.__config = config;
 
-reducto.configure = (cfg) => {
+reduxto.configure = (cfg) => {
     const newActions =  {
-        ...reducto.__config.actions,
+        ...reduxto.__config.actions,
         ...(cfg.actions || {}),
     }
 
-    reducto.__config = {
-        ...reducto.__config,
+    reduxto.__config = {
+        ...reduxto.__config,
         ...cfg,
         actions: newActions
     }
 }
 
-reducto.configure.default = DEFAULT_CONFIG
+reduxto.configure.default = DEFAULT_CONFIG
 
-export default reducto
+export default reduxto
