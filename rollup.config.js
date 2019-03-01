@@ -3,7 +3,7 @@ import {uglify} from 'rollup-plugin-uglify'
 
 export default [
   {
-    input: 'index.js',
+    input: './src/index.js',
     output: {
       file: 'dist/reduxto.js',
       format: 'umd',
@@ -16,7 +16,7 @@ export default [
     ]
   },
   {
-    input: 'index.js',
+    input: './src/index.js',
     output: {
       file: 'dist/reduxto.min.js',
       format: 'umd',

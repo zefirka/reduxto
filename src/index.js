@@ -15,12 +15,9 @@ const DEFAULT_CONFIG = {
             return s
         },
     },
-    reducerName: (namespace) => {
-        return capitalize(namespace);
-    },
     actionCreator: (namespace) => {
         return (actionName, payloadCreator = unaryId) => {
-            const type = `${namespace}/${actionName}`
+            const type = `${namespace}/${actionName}${capitalize(namespace)}`
 
             function actionCreator(...args) {
                 return {
@@ -62,12 +59,11 @@ const DEFAULT_CONFIG = {
 const config = DEFAULT_CONFIG
 
 function reduxto(namespace, defaultState, handlers = {}) {
-    const reducerName = reduxto.__config.reducerName(namespace)
     const createAction = reduxto.__config.actionCreator(namespace)
 
     const actions = Object.keys(reduxto.__config.actions).reduce((acc, operation) => ({
         ...acc,
-        [operation]: createAction(operation + reducerName)
+        [operation]: createAction(operation)
     }), {})
 
     const defaultHandlers = reduxto.__config.actions

@@ -1,6 +1,6 @@
 # reduxto [![Build Status](https://travis-ci.org/zefirka/reduxto.svg?branch=master)](https://travis-ci.org/zefirka/reduxto)
 
-<img src="./static/reduxto.gif" align="right" width="180"/>
+<img src="./static/reducto.gif" align="right" width="180"/>
 
 reduxto is small and simple reducer creator for redux. If you're tired to write same code for every reducer, describe actions, constants, action-handlers then you may find reduxto useful. It's totally hackable and extensible, so if your approach to action naming, data types and structures in store, namespacing your actions is different then reduxto provides by standard, you can configure reduxto for yourself very easy. 
 
