@@ -76,13 +76,10 @@
         return s;
       }
     },
-    reducerName: function reducerName(namespace) {
-      return capitalize(namespace);
-    },
     actionCreator: function actionCreator(namespace) {
       return function (actionName) {
         var payloadCreator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : unaryId;
-        var type = "".concat(namespace, "/").concat(actionName);
+        var type = "".concat(namespace, "/").concat(actionName).concat(capitalize(namespace));
 
         function actionCreator() {
           return _objectSpread({
@@ -132,12 +129,10 @@
 
     var handlers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-    var reducerName = reduxto.__config.reducerName(namespace);
-
     var createAction = reduxto.__config.actionCreator(namespace);
 
     var actions = Object.keys(reduxto.__config.actions).reduce(function (acc, operation) {
-      return _objectSpread({}, acc, _defineProperty({}, operation, createAction(operation + reducerName)));
+      return _objectSpread({}, acc, _defineProperty({}, operation, createAction(operation)));
     }, {});
     var defaultHandlers = reduxto.__config.actions;
 
