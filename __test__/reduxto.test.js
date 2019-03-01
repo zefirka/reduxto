@@ -59,7 +59,7 @@ describe('reduxto', () => {
             let newState = reducer(state, actions.set(data))
 
             expect(newState).toEqual(data)
-            expect(newState).not.toBe(data)
+            expect(newState).not.toBe(state)
 
             state = newState
         })
