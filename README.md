@@ -84,20 +84,18 @@ In this case appears a neccessary for a lot of similiar actions over store. It's
 
 
 ## Standart reducto methods
-<a href="docs">
+<a href="docs"></a>
 
 Reducto
 
 ```js
-
 const defaultState = {}
 const {actions, reducer} = reducto('boxes', defaultState)
 
 actions.get() // {type: 'boxes/getBoxes'}
 actions.getById(12) // {type: 'boxes/getBoxesById', payload: 12}
 
-actions.set({12})
-
+actions.set({0: {name: 'BoxName', conten: 'Box content'}}) // will fully replace state
 ```
 
 ## Extending and configuring
