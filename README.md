@@ -1,9 +1,12 @@
 # Reducto [![Build Status](https://travis-ci.org/zefirka/reducto.svg?branch=master)](https://travis-ci.org/zefirka/reducto)
 
+
+<img src="./static/reducto.gif" align="right" width="180"/>
+
 Reducto is small and simple reducer creator for redux. If you're tired to write same code for every reducer, describe actions, constants, action-handlers then you may find reducto useful. It's totally hackable and extensible, so if your approach to action naming, data types and structures in store, namespacing your actions is different then reducto provides by standard, you can configure reducto for yourself very easy. 
 
 ## Usage and ratio
-[Look for examples, methods, configuring and extending in docs](#docs)
+[Look for examples, methods, configuring and extending in docs](#documentation)
 
 Simplify your reducers creation with reducto, use it and get ready reducer and actions. No constants, no manual action creation, no copy-paste logic in reducers.
 

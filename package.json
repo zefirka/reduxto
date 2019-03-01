@@ -6,8 +6,14 @@
   "scripts": {
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/zefirka/reducto/"
+  },
+  "bugs": {
+    "url": "https://github.com/zefirka/reducto/issues/"
+  },
+  "author": "Trdat Mkrtchyan <wombtromb@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/polyfill": "^7.2.5",
