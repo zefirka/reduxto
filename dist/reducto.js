@@ -48,7 +48,7 @@
     };
   };
 
-  var config = {
+  var DEFAULT_CONFIG = {
     strictInvariant: true,
     actions: {
       'get': null,
@@ -82,12 +82,29 @@
     actionCreator: function actionCreator(namespace) {
       return function (actionName) {
         var payloadCreator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : unaryId;
-        return function () {
-          var actionData = payloadCreator.apply(void 0, arguments);
+        var type = "".concat(namespace, "/").concat(actionName);
+
+        function actionCreator() {
           return _objectSpread({
-            type: "".concat(namespace, "/").concat(actionName)
-          }, actionData);
-        };
+            type: type
+          }, payloadCreator.apply(void 0, arguments));
+        }
+
+        Object.defineProperties(actionCreator, {
+          toString: {
+            enumerable: false,
+            value: function value() {
+              return type;
+            }
+          },
+          valueOf: {
+            enumerable: false,
+            value: function value() {
+              return type;
+            }
+          }
+        });
+        return actionCreator;
       };
     },
     reducerCreator: function reducerCreator(actions, defaultState) {
@@ -108,18 +125,26 @@
       };
     }
   };
+  var config = DEFAULT_CONFIG;
 
   function reducto(namespace, defaultState) {
+    var _objectSpread4;
+
     var handlers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-    var reducerName = reducto.__config.getRedcureName(namespace);
+    var reducerName = reducto.__config.reducerName(namespace);
 
-    var createAction = reducto.__config.getActionCreator(namespace);
+    var createAction = reducto.__config.actionCreator(namespace);
 
-    var actions = Object.keys(reducro.__config.actions).reduce(function (acc, operation) {
+    var actions = Object.keys(reducto.__config.actions).reduce(function (acc, operation) {
       return _objectSpread({}, acc, _defineProperty({}, operation, createAction(operation + reducerName)));
     }, {});
-    var reducer = handleActions(_objectSpread({}, handlers), defaultState);
+    var defaultHandlers = reducto.__config.actions;
+
+    var actionHandlers = _objectSpread((_objectSpread4 = {}, _defineProperty(_objectSpread4, actions.set, defaultHandlers.set), _defineProperty(_objectSpread4, actions.put, defaultHandlers.put), _defineProperty(_objectSpread4, actions.update, defaultHandlers.update), _defineProperty(_objectSpread4, actions.remove, defaultHandlers.remove), _objectSpread4), handlers);
+
+    var reducer = reducto.__config.reducerCreator(actionHandlers, defaultState);
+
     return {
       reducer: reducer,
       actions: actions
@@ -129,10 +154,14 @@
   reducto.__config = config;
 
   reducto.configure = function (cfg) {
-    reducto.__config = _objectSpread({}, reducto.__config, {
-      cfg: cfg
+    var newActions = _objectSpread({}, reducto.__config.actions, cfg.actions || {});
+
+    reducto.__config = _objectSpread({}, reducto.__config, cfg, {
+      actions: newActions
     });
   };
+
+  reducto.configure.default = DEFAULT_CONFIG;
 
   return reducto;
 

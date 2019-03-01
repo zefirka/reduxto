@@ -1,6 +1,6 @@
 {
     "env": {
-        "prodution": {
+        "development": {
             "presets": [
                 ["@babel/env", {"modules": false}]
             ]
