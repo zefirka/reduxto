@@ -1,7 +1,6 @@
 import {capitalize, put, copy, unaryId} from './utils'
 
 const DEFAULT_CONFIG = {
-    strictInvariant: false,
     actions: {
         'get': null,
         'getById': null,
@@ -44,13 +43,7 @@ const DEFAULT_CONFIG = {
         return (state = defaultState, action) => {
             const {type} = action;
             if (actions[type]) {
-                const newState = actions[type](state, action)
-
-                if (reduxto.__config.strictInvariant) {
-                    return JSON.parse(JSON.stringify(newState))
-                }
-
-                return newState
+                return actions[type](state, action)
             }
         }
     }
