@@ -1,13 +1,13 @@
 import {capitalize, put, copy, unaryId} from './utils'
 
 const DEFAULT_CONFIG = {
-    strictInvariant: true,
+    strictInvariant: false,
     actions: {
         'get': null,
         'getById': null,
         'set': (_, {payload}) => payload,
         'put': put,
-        'update': (state, {payload: {id, value}}) => ({...copy(state), [id]: value}),
+        'update': (state, {payload: {id, value}}) => ({...copy(state), [id]: {...state[id], ...value}}),
         'remove': (state, {payload}) => {
             const s = copy(state)
             delete s[payload]
