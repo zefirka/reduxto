@@ -84,6 +84,38 @@ describe('reduxto', () => {
 
             state = newState
         })
+
+        test(':update', () => {
+            const update = {
+                id: 1,
+                value: {
+                    body: 'new',
+                    prop: 'val',
+                },
+            }
+
+            let newState = reducer(state, actions.update(update))
+
+            expect(newState).toEqual({...state, ...({
+                1: {body: 'new', value: 1, prop: 'val' },
+            })})
+            expect(newState).not.toBe(state)
+
+            state = newState
+        })
+
+        test(':remove', () => {
+            let newState = reducer(state, actions.remove(2))
+            newState = reducer(newState, actions.remove(3))
+
+            expect(newState).toEqual({
+                1: {body: 'new', value: 1, prop: 'val' },
+            })
+
+            expect(newState).not.toBe(state)
+
+            state = newState
+        })
     })
    
 })
