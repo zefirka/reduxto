@@ -1,7 +1,6 @@
 import reduxto from '../src/'
 
 describe('reduxto config', () => {
-
     describe('reducer with arrays', () => {
         const configActions = {
             put: (state, {payload}) => state.concat(payload),
@@ -69,7 +68,7 @@ describe('reduxto config', () => {
     })
 
     describe('action creation', () => {
-        const toSnakeCase = s => s.replace(/\.?([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
+        const toSnakeCase = s => s.replace(/\.?([A-Z])/g, (x,y) => "_" + y.toLowerCase()).replace(/^_/, "")
 
         const actionCreator = (namespace) => {
             return function(actionName) {

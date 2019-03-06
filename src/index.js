@@ -42,6 +42,7 @@ const DEFAULT_CONFIG = {
     reducerCreator: (actions, defaultState) => {
         return (state = defaultState, action) => {
             const {type} = action;
+
             if (actions[type]) {
                 return actions[type](state, action)
             }

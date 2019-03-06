@@ -112,7 +112,7 @@ By standard reduxto is made for work with flat objects in store, with ID as key 
 }
 ```
 
-This sttructure will be ok. And reduxto will provide actions:
+This sttructure will be ok. And reduxto will provide actions
 
 #### Actions
 
@@ -163,4 +163,47 @@ actions.remove(1) //removes element with id 1
 
 ## Extending and configuring
 
-TBD
+You can configure:
+ - default action handlers which will be created by `reduxto`. 
+ - action creator (by default it use something like [`redux-namespaced-actions`](http://npmjs.com/package/redux-namespaced-actions))
+ - reducer creator
+
+Let assume you want to create REST-like reducer with uppercase namespaced actions:
+
+```js
+redux.configure({
+    actions: {
+        get: null, // no action handler in reducer
+        post: (state, action) => {...},
+        put: (state, action) => {...},
+        patch: (state, action) => {...},
+        delete: (state, action) => {...}
+    },
+    actionCreator: (namespace) => (actionName) => (payload) => ({
+        type: namespace + '_' + toSnakeCase(actionName).toUpperCase(),
+        payload,
+    }),
+});
+```
+
+So when you call to `reduxto('posts')`, you will get next actions: 
+
+```js
+const {actions, reducer} = reduxto('posts', {})
+
+actions.get(666) 
+/**
+ * {
+ *      type: POSTS_GET,
+ *      payload: 666
+ * }
+ */
+
+actions.post({id: 667, value: 'post'})
+/**
+ * {
+ *      type: POSTS_POST,
+ *      payload: {id: 667, value: 'post'}
+ * }
+ */
+```
