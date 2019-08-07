@@ -133,7 +133,6 @@
   };
 
   var DEFAULT_CONFIG = {
-    strictInvariant: true,
     actions: {
       'get': null,
       'getById': null,
@@ -146,7 +145,7 @@
         var _ref2$payload = _ref2.payload,
             id = _ref2$payload.id,
             value = _ref2$payload.value;
-        return _objectSpread({}, copy(state), _defineProperty({}, id, value));
+        return _objectSpread({}, copy(state), _defineProperty({}, id, _objectSpread({}, state[id], value)));
       },
       'remove': function remove(state, _ref3) {
         var payload = _ref3.payload;
@@ -161,9 +160,14 @@
         var type = "".concat(namespace, "/").concat(actionName).concat(capitalize(namespace));
 
         function actionCreator() {
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          var actionExtend = args ? payloadCreator.apply(void 0, args) : {};
           return _objectSpread({
             type: type
-          }, payloadCreator.apply(void 0, arguments));
+          }, actionExtend);
         }
 
         Object.defineProperties(actionCreator, {
@@ -190,21 +194,13 @@
         var type = action.type;
 
         if (actions[type]) {
-          var newState = actions[type](state, action);
-
-          if (reduxto.__config.strictInvariant) {
-            return JSON.parse(JSON.stringify(newState));
-          }
-
-          return newState;
+          return actions[type](state, action);
         }
       };
     }
   };
 
   function reduxto(namespace, defaultState) {
-    var _objectSpread4;
-
     var handlers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     var createAction = reduxto.__config.actionCreator(namespace);
@@ -212,9 +208,17 @@
     var actions = Object.keys(reduxto.__config.actions).reduce(function (acc, operation) {
       return _objectSpread({}, acc, _defineProperty({}, operation, createAction(operation)));
     }, {});
-    var defaultHandlers = reduxto.__config.actions;
+    var defaultHandlers = Object.entries(actions).reduce(function (acc, _ref4) {
+      var _ref5 = _slicedToArray(_ref4, 2),
+          actionName = _ref5[0],
+          actionBody = _ref5[1];
 
-    var actionHandlers = _objectSpread((_objectSpread4 = {}, _defineProperty(_objectSpread4, actions.set, defaultHandlers.set), _defineProperty(_objectSpread4, actions.put, defaultHandlers.put), _defineProperty(_objectSpread4, actions.update, defaultHandlers.update), _defineProperty(_objectSpread4, actions.remove, defaultHandlers.remove), _objectSpread4), handlers);
+      return _objectSpread({}, acc, _defineProperty({}, actionBody, reduxto.__config.actions[actionName] || function () {
+        console.warn('No action ' + action + 'is configured');
+      }));
+    }, {});
+
+    var actionHandlers = _objectSpread({}, defaultHandlers, handlers);
 
     var reducer = reduxto.__config.reducerCreator(actionHandlers, defaultState);
 
