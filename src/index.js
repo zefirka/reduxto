@@ -58,13 +58,17 @@ function reduxto(namespace, defaultState, handlers = {}) {
         [operation]: createAction(operation)
     }), {})
 
-    const defaultHandlers = reduxto.__config.actions
+    const defaultHandlers = Object.entries(actions).reduce((acc, [actionName, actionBody]) => {
+        return {
+            ...acc,
+            [actionBody]: reduxto.__config.actions[actionName] || function() {
+                console.warn('No action ' + action + 'is configured')
+            }
+        };
+    }, {})
 
     const actionHandlers = {
-        [actions.set]: defaultHandlers.set,
-        [actions.put]: defaultHandlers.put,
-        [actions.update]: defaultHandlers.update,
-        [actions.remove]: defaultHandlers.remove,
+        ...defaultHandlers,
         ...handlers,
     }
 
