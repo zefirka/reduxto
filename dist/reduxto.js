@@ -205,20 +205,34 @@
 
     var createAction = reduxto.__config.actionCreator(namespace);
 
-    var actions = Object.keys(reduxto.__config.actions).reduce(function (acc, operation) {
-      return _objectSpread({}, acc, _defineProperty({}, operation, createAction(operation)));
-    }, {});
-    var defaultHandlers = Object.entries(actions).reduce(function (acc, _ref4) {
+    var actions = {};
+    var additionalHandlers = {};
+    Object.entries(handlers).forEach(function (_ref4) {
       var _ref5 = _slicedToArray(_ref4, 2),
           actionName = _ref5[0],
-          actionBody = _ref5[1];
+          handler = _ref5[1];
 
-      return _objectSpread({}, acc, _defineProperty({}, actionBody, reduxto.__config.actions[actionName] || function () {
-        console.warn('No action ' + action + 'is configured');
+      if (handler === null) {
+        actions[actionName] = createAction(actionName);
+      } else {
+        additionalHandlers[actionName] = handler;
+      }
+    });
+    Object.keys(reduxto.__config.actions).forEach(function (operation) {
+      actions[operation] = createAction(operation);
+    });
+    var defaultHandlers = Object.entries(actions).reduce(function (acc, _ref6) {
+      var _ref7 = _slicedToArray(_ref6, 2),
+          actionName = _ref7[0],
+          actionBody = _ref7[1];
+
+      return _objectSpread({}, acc, _defineProperty({}, actionBody, reduxto.__config.actions[actionName] || function (state) {
+        console.warn('No action ' + actionName + 'is configured');
+        return state;
       }));
     }, {});
 
-    var actionHandlers = _objectSpread({}, defaultHandlers, handlers);
+    var actionHandlers = _objectSpread({}, defaultHandlers, additionalHandlers);
 
     var reducer = reduxto.__config.reducerCreator(actionHandlers, defaultState);
 
