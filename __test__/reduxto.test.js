@@ -117,5 +117,23 @@ describe('reduxto', () => {
             state = newState
         })
     })
-   
+
+    describe('additional handlers', () => {
+        const {actions, reducer} = reduxto('test', {}, {
+            GET_ACTION: null,
+            POST_ACTION: (state, {payload}) => {
+                return {...state, [payload]: 'RESULT_OF_ACTION'}
+            },
+        });
+
+        test('should generate action', () => {
+            expect(actions.GET_ACTION()).toEqual({
+                type: 'test/GET_ACTIONTest',
+            })
+        })
+
+        test('should not create handler', () => {
+            expect(reducer({}, actions.GET_ACTION())).toEqual({})
+        })
+    })
 })

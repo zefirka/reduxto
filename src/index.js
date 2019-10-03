@@ -53,23 +53,34 @@ const DEFAULT_CONFIG = {
 function reduxto(namespace, defaultState, handlers = {}) {
     const createAction = reduxto.__config.actionCreator(namespace)
 
-    const actions = Object.keys(reduxto.__config.actions).reduce((acc, operation) => ({
-        ...acc,
-        [operation]: createAction(operation)
-    }), {})
+    const actions = {};
+    const additionalHandlers = {};
+    
+    Object.entries(handlers).forEach(([actionName, handler]) => {
+        if (handler === null) {
+            actions[actionName] = createAction(actionName)
+        } else {
+            additionalHandlers[actionName]  = handler;
+        }
+    })
+
+    Object.keys(reduxto.__config.actions).forEach((operation) => {
+        actions[operation] = createAction(operation);
+    });
 
     const defaultHandlers = Object.entries(actions).reduce((acc, [actionName, actionBody]) => {
         return {
             ...acc,
-            [actionBody]: reduxto.__config.actions[actionName] || function() {
-                console.warn('No action ' + action + 'is configured')
+            [actionBody]: reduxto.__config.actions[actionName] || function(state) {
+                console.warn('No action ' + actionName + 'is configured')
+                return state
             }
         };
     }, {})
 
     const actionHandlers = {
         ...defaultHandlers,
-        ...handlers,
+        ...additionalHandlers,
     }
 
     const reducer = reduxto.__config.reducerCreator(actionHandlers, defaultState)
