@@ -1,6 +1,6 @@
 {
   "name": "reduxto",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Reducer creator",
   "main": "./dist/reduxto.js",
   "scripts": {
