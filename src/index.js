@@ -1,4 +1,4 @@
-import {capitalize, put, copy, unaryId} from './utils'
+import {capitalize, put, update, remove, unaryId} from './utils'
 
 const DEFAULT_CONFIG = {
     actions: {
@@ -6,13 +6,10 @@ const DEFAULT_CONFIG = {
         'getById': null,
         'set': (_, {payload}) => payload,
         'put': put,
-        'update': (state, {payload: {id, value}}) => ({...copy(state), [id]: {...state[id], ...value}}),
-        'remove': (state, {payload}) => {
-            const s = copy(state)
-            delete s[payload]
-            return s
-        },
+        'update': update,
+        'remove': remove,
     },
+
     actionCreator: (namespace) => {
         return (actionName, payloadCreator = unaryId) => {
             const type = `${namespace}/${actionName}${capitalize(namespace)}`

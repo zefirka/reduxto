@@ -1,17 +1,40 @@
 export const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1)
-export const unaryId = (payload) => ({payload})
+export const unaryId = (payload, key) => ({payload, key})
 
 export const copy = (state) => {
-    const s = {}
-
-    for(const [id, value] of Object.entries(state)) {
-        s[id] = {...value}
+    if (Array.isArray(state)) {
+        return state.map(copy)
     }
-    
-    return s
+
+    if (typeof state === 'object') {
+        const s = {}
+
+        for(const [id, value] of Object.entries(state)) {
+            s[id] = copy(value);
+        }
+        
+        return s
+    }
+
+    return state
 }
 
-export const put = (state, {payload}) => {
+export const put = (state, {payload, key = 'id'}) => {
+    if (Array.isArray(state)) {
+        const s = copy(state).map(item => {
+            const m = payload.find((i) => i[key] === item[key])
+            return m || item;
+        });
+
+        payload.forEach((item) => {
+            if (!state.find((i) => i[key] === item[key])) {
+                s.push(item)
+            }
+        })
+
+        return s
+    }
+
     const s = {}
 
     for(const [id, value] of Object.entries(state)) {
@@ -28,5 +51,30 @@ export const put = (state, {payload}) => {
         }
     }
 
+    return s
+}
+
+export const update = (state, {payload: {id, value, key = 'id'}}) => {
+    return Array.isArray(state)
+        ? state.map((item) => {
+            if (item[key] === id) {
+                return value
+            }
+            return copy(item)
+        })
+        : ({...copy(state), [id]: {...state[id], ...value}})
+}
+
+export const remove = (state, {payload}) => {
+    if (Array.isArray(state)) {
+        const s = state.filter((item) => {
+            return typeof payload.key !== 'undefined' ? item[payload.key] !== payload.value : item.id !== payload
+        })
+
+        return s
+    }
+
+    const s = copy(state)
+    delete s[payload]
     return s
 }
