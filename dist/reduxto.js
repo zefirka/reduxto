@@ -4,6 +4,20 @@
   (global = global || self, global.reduxto = factory());
 }(this, function () { 'use strict';
 
+  function _typeof(obj) {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
   function _defineProperty(obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
@@ -79,28 +93,58 @@
   var capitalize = function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
-  var unaryId = function unaryId(payload) {
+  var unaryId = function unaryId(payload, key) {
     return {
-      payload: payload
+      payload: payload,
+      key: key
     };
   };
   var copy = function copy(state) {
-    var s = {};
-
-    var _arr = Object.entries(state);
-
-    for (var _i = 0; _i < _arr.length; _i++) {
-      var _arr$_i = _slicedToArray(_arr[_i], 2),
-          id = _arr$_i[0],
-          value = _arr$_i[1];
-
-      s[id] = _objectSpread({}, value);
+    if (Array.isArray(state)) {
+      return state.map(copy);
     }
 
-    return s;
+    if (_typeof(state) === 'object') {
+      var s = {};
+
+      var _arr = Object.entries(state);
+
+      for (var _i = 0; _i < _arr.length; _i++) {
+        var _arr$_i = _slicedToArray(_arr[_i], 2),
+            id = _arr$_i[0],
+            value = _arr$_i[1];
+
+        s[id] = copy(value);
+      }
+
+      return s;
+    }
+
+    return state;
   };
   var put = function put(state, _ref) {
-    var payload = _ref.payload;
+    var payload = _ref.payload,
+        _ref$key = _ref.key,
+        key = _ref$key === void 0 ? 'id' : _ref$key;
+
+    if (Array.isArray(state)) {
+      var _s = copy(state).map(function (item) {
+        var m = payload.find(function (i) {
+          return i[key] === item[key];
+        });
+        return m || item;
+      });
+
+      payload.forEach(function (item) {
+        if (!state.find(function (i) {
+          return i[key] === item[key];
+        })) {
+          _s.push(item);
+        }
+      });
+      return _s;
+    }
+
     var s = {};
 
     var _arr2 = Object.entries(state);
@@ -131,6 +175,35 @@
 
     return s;
   };
+  var update = function update(state, _ref2) {
+    var _ref2$payload = _ref2.payload,
+        id = _ref2$payload.id,
+        value = _ref2$payload.value,
+        _ref2$payload$key = _ref2$payload.key,
+        key = _ref2$payload$key === void 0 ? 'id' : _ref2$payload$key;
+    return Array.isArray(state) ? state.map(function (item) {
+      if (item[key] === id) {
+        return value;
+      }
+
+      return copy(item);
+    }) : _objectSpread({}, copy(state), _defineProperty({}, id, _objectSpread({}, state[id], value)));
+  };
+  var remove = function remove(state, _ref3) {
+    var payload = _ref3.payload;
+
+    if (Array.isArray(state)) {
+      var _s2 = state.filter(function (item) {
+        return typeof payload.key !== 'undefined' ? item[payload.key] !== payload.value : item.id !== payload;
+      });
+
+      return _s2;
+    }
+
+    var s = copy(state);
+    delete s[payload];
+    return s;
+  };
 
   var DEFAULT_CONFIG = {
     actions: {
@@ -141,18 +214,8 @@
         return payload;
       },
       'put': put,
-      'update': function update(state, _ref2) {
-        var _ref2$payload = _ref2.payload,
-            id = _ref2$payload.id,
-            value = _ref2$payload.value;
-        return _objectSpread({}, copy(state), _defineProperty({}, id, _objectSpread({}, state[id], value)));
-      },
-      'remove': function remove(state, _ref3) {
-        var payload = _ref3.payload;
-        var s = copy(state);
-        delete s[payload];
-        return s;
-      }
+      'update': update,
+      'remove': remove
     },
     actionCreator: function actionCreator(namespace) {
       return function (actionName) {
@@ -207,10 +270,10 @@
 
     var actions = {};
     var additionalHandlers = {};
-    Object.entries(handlers).forEach(function (_ref4) {
-      var _ref5 = _slicedToArray(_ref4, 2),
-          actionName = _ref5[0],
-          handler = _ref5[1];
+    Object.entries(handlers).forEach(function (_ref2) {
+      var _ref3 = _slicedToArray(_ref2, 2),
+          actionName = _ref3[0],
+          handler = _ref3[1];
 
       if (handler === null) {
         actions[actionName] = createAction(actionName);
@@ -221,10 +284,10 @@
     Object.keys(reduxto.__config.actions).forEach(function (operation) {
       actions[operation] = createAction(operation);
     });
-    var defaultHandlers = Object.entries(actions).reduce(function (acc, _ref6) {
-      var _ref7 = _slicedToArray(_ref6, 2),
-          actionName = _ref7[0],
-          actionBody = _ref7[1];
+    var defaultHandlers = Object.entries(actions).reduce(function (acc, _ref4) {
+      var _ref5 = _slicedToArray(_ref4, 2),
+          actionName = _ref5[0],
+          actionBody = _ref5[1];
 
       return _objectSpread({}, acc, _defineProperty({}, actionBody, reduxto.__config.actions[actionName] || function (state) {
         console.warn('No action ' + actionName + 'is configured');

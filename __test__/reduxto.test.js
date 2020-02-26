@@ -44,78 +44,170 @@ describe('reduxto', () => {
     })
 
     describe('action handlers', () => {
-        let state = {}
+        describe('objects', () => {
+            let state = {}
 
-        test(':set', () => {
-            const data = {
-                1: {
-                    value: 1
-                },
-                2: {
-                    value: 2,
+            test(':set', () => {
+                const data = {
+                    1: {
+                        value: 1
+                    },
+                    2: {
+                        value: 2,
+                    }
                 }
-            }
-        
-            let newState = reducer(state, actions.set(data))
+            
+                let newState = reducer(state, actions.set(data))
 
-            expect(newState).toEqual(data)
-            expect(newState).not.toBe(state)
+                expect(newState).toEqual(data)
+                expect(newState).not.toBe(state)
 
-            state = newState
-        })
-
-        test(':put', () => {
-            const diff = {
-                1: {
-                    body: 'some'
-                },
-                3: {
-                    value: 3
-                }
-            }
-
-            let newState = reducer(state, actions.put(diff))
-
-            expect(newState).toEqual({...state, ...({
-                1: {body: 'some', value: 1},
-                3: {value: 3}
-            })})
-            expect(newState).not.toBe(state)
-
-            state = newState
-        })
-
-        test(':update', () => {
-            const update = {
-                id: 1,
-                value: {
-                    body: 'new',
-                    prop: 'val',
-                },
-            }
-
-            let newState = reducer(state, actions.update(update))
-
-            expect(newState).toEqual({...state, ...({
-                1: {body: 'new', value: 1, prop: 'val' },
-            })})
-            expect(newState).not.toBe(state)
-
-            state = newState
-        })
-
-        test(':remove', () => {
-            let newState = reducer(state, actions.remove(2))
-            newState = reducer(newState, actions.remove(3))
-
-            expect(newState).toEqual({
-                1: {body: 'new', value: 1, prop: 'val' },
+                state = newState
             })
 
-            expect(newState).not.toBe(state)
+            test(':put', () => {
+                const diff = {
+                    1: {
+                        body: 'some'
+                    },
+                    3: {
+                        value: 3
+                    }
+                }
 
-            state = newState
-        })
+                let newState = reducer(state, actions.put(diff))
+
+                expect(newState).toEqual({...state, ...({
+                    1: {body: 'some', value: 1},
+                    3: {value: 3}
+                })})
+                expect(newState).not.toBe(state)
+
+                state = newState
+            })
+
+            test(':update', () => {
+                const update = {
+                    id: 1,
+                    value: {
+                        body: 'new',
+                        prop: 'val',
+                    },
+                }
+
+                let newState = reducer(state, actions.update(update))
+
+                expect(newState).toEqual({...state, ...({
+                    1: {body: 'new', value: 1, prop: 'val' },
+                })})
+                expect(newState).not.toBe(state)
+
+                state = newState
+            })
+
+            test(':remove', () => {
+                let newState = reducer(state, actions.remove(2))
+                newState = reducer(newState, actions.remove(3))
+
+                expect(newState).toEqual({
+                    1: {body: 'new', value: 1, prop: 'val' },
+                })
+
+                expect(newState).not.toBe(state)
+
+                state = newState
+            })
+        });
+
+        describe('arrays', () => {
+            let state = []
+
+            test(':set', () => {
+                const data = [
+                    {
+                        id: 1,
+                        value: 1
+                    },
+                    {
+                        id: 2,
+                        value: 2,
+                    }
+                ];
+            
+                let newState = reducer(state, actions.set(data))
+
+                expect(newState).toEqual(data)
+                expect(newState).not.toBe(state)
+
+                state = newState
+            })
+
+            test(':put', () => {
+                const diff = [
+                    {
+                        id: 1,
+                        value: 'new'
+                    },
+                    {
+                        id: 3,
+                        value: 3
+                    }
+                ]
+
+                let newState = reducer(state, actions.put(diff))
+
+                expect(newState).toEqual([
+                    {
+                        id: 1,
+                        value: 'new'
+                    },
+                    {
+                        id: 2,
+                        value: 2,
+                    },
+                    {
+                        id: 3,
+                        value: 3,
+                    }
+                ])
+                expect(newState).not.toBe(state)
+
+                state = newState
+            })
+
+            test(':update', () => {
+                const update = {
+                    id: 1,
+                    value: {
+                        id: 1,
+                        prop: 'val',
+                    },
+                }
+
+                let newState = reducer(state, actions.update(update))
+
+                expect(newState.find(({id}) => id === 1)).toEqual({
+                    id: 1,
+                    prop: 'val',
+                })
+                expect(newState).not.toBe(state)
+
+                state = newState
+            })
+
+            test(':remove', () => {
+                let newState = reducer(state, actions.remove(1))
+                newState = reducer(newState, actions.remove(2))
+
+                expect(newState).toEqual([
+                    {id: 3, value: 3}
+                ])
+
+                expect(newState).not.toBe(state)
+
+                state = newState
+            })
+        });
     })
 
     describe('additional handlers', () => {
