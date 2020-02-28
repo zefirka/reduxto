@@ -104,7 +104,7 @@
       return state.map(copy);
     }
 
-    if (_typeof(state) === 'object') {
+    if (_typeof(state) === 'object' && state !== null) {
       var s = {};
 
       var _arr = Object.entries(state);
