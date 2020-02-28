@@ -50,13 +50,14 @@ describe('reduxto', () => {
             test(':set', () => {
                 const data = {
                     1: {
-                        value: 1
+                        value: 1,
+                        prop: null,
                     },
                     2: {
                         value: 2,
                     }
                 }
-            
+
                 let newState = reducer(state, actions.set(data))
 
                 expect(newState).toEqual(data)
@@ -78,7 +79,7 @@ describe('reduxto', () => {
                 let newState = reducer(state, actions.put(diff))
 
                 expect(newState).toEqual({...state, ...({
-                    1: {body: 'some', value: 1},
+                    1: {body: 'some', value: 1, prop: null},
                     3: {value: 3}
                 })})
                 expect(newState).not.toBe(state)

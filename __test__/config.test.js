@@ -59,7 +59,7 @@ describe('reduxto config', () => {
         test(':delete', () => {
             let newState = reducer(state, actions.remove(2))
             newState = reducer(newState, actions.remove(3))
-    
+
             expect(newState).toEqual([{id: 1, value: 'a'}])
             expect(newState).not.toBe(state)
 

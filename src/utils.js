@@ -6,13 +6,13 @@ export const copy = (state) => {
         return state.map(copy)
     }
 
-    if (typeof state === 'object') {
+    if (typeof state === 'object' && state !== null) {
         const s = {}
 
         for(const [id, value] of Object.entries(state)) {
             s[id] = copy(value);
         }
-        
+
         return s
     }
 
